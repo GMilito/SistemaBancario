@@ -5,6 +5,7 @@ import json
 import base64
 import threading
 
+from datetime import datetime
 from Datos import *
 from Encryption import decrypt
 
@@ -47,7 +48,19 @@ def validarTarjeta(nroTarjeta,Pin,FecVec):
     DBPin = dict['PIN']
     DBFecVec = dict['fechaVencimiento']
     print("fecha: ",dict['fechaVencimiento'])
-    if DBNroTarjeta == nroTarjeta and DBPin == Pin and DBFecVec == FecVec:
+
+    # Obtener el formato "MM/YY"
+    fechaFormateada = DBFecVec.strftime("%m/%y")
+    print("Tarjetas")
+    print(DBNroTarjeta == nroTarjeta)
+    print("pines")
+    print(int(DBPin) == int(Pin))
+    print(DBPin)
+    print(Pin)
+    print("fechas")
+    print(fechaFormateada == FecVec)
+    
+    if DBNroTarjeta == nroTarjeta and int(DBPin) == int(Pin) and fechaFormateada == FecVec:
         return True
     else:
         return False
@@ -79,17 +92,48 @@ def procesarRetiro(jsonBytes,KEY,IV):
     print("tarjeta ",NroTarjeta,"PIN ",PINstr, "fec" ,FecVec)
     
     validada = validarTarjeta(NroTarjeta,PINstr,FecVec)
-    
+    print("Validacion")
+    print(validada)
     if validada:
+        print("Validada")
         resp = verificarTipoTarjeta(NroTarjeta)
         tipoTarjeta = resp['tipoTarjeta']
         if tipoTarjeta == "credito":
             pass
         elif tipoTarjeta == 'debito':
-            nroCuenta = getNroCuenta(NroTarjeta)
+            resp = getNroCuenta(NroTarjeta)
+            nroCuenta = resp['numeroCuenta']
             trama = "0:"+nroCuenta+":"+monto+":"+NroTarjeta+":"+codigo
-    else:
-        return "Datos incorrectos"
+            # Crear un socket TCP/IP
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # Definir la dirección IP y el puerto del servidor al que te quieres conectar
+            server_address = ('localhost', 4528)
+
+            # Conectar el socket al servidor
+            print('Conectándose a {} en el puerto {}'.format(*server_address))
+            sock.connect(server_address)
+
+            try:
+                # Enviar datos
+                buffer = trama.encode('utf-8')
+                print('Enviando {!r}'.format(buffer))
+                sock.sendall(buffer)
+
+                # Esperar la respuesta del servidor
+                amount_received = 0
+                amount_expected = len(trama)
+
+                while amount_received < amount_expected:
+                    data = sock.recv(16)
+                    amount_received += len(data)
+                    print('Recibido {!r}'.format(data))
+
+            finally:
+                print('Cerrando conexión')
+                sock.close()
+        else:
+            return "Datos incorrectos"
         
     
     
