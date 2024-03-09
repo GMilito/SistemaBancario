@@ -8,9 +8,9 @@ namespace Cajero
 {
     public class SerializacionConsulta
     {
-        public byte[] NumeroTarjeta { get; set; }
-        public byte[] PIN { get; set; }
-        public byte[] FechaVencimiento { get; set; }
+        public string NumeroTarjeta { get; set; }
+        public string PIN { get; set; }
+        public string FechaVencimiento { get; set; }
         public string CodigoVerificacion { get; set; }
         public string IdentificacionCajero { get; set; }
         public string TipoTransaccion { get; set; }
@@ -21,7 +21,7 @@ namespace Cajero
         }
 
         // Constructor para inicializar los campos
-        public SerializacionConsulta(byte[] numeroTarjeta, byte[] pin, byte[] fechaVencimiento, string codigoVerificacion,
+        public SerializacionConsulta(string numeroTarjeta, string pin, string fechaVencimiento, string codigoVerificacion,
                            string identificacionCajero, string tipoTransaccion)
         {
             NumeroTarjeta = numeroTarjeta;

@@ -109,6 +109,7 @@
             this.tbTarjeta.Name = "tbTarjeta";
             this.tbTarjeta.Size = new System.Drawing.Size(100, 20);
             this.tbTarjeta.TabIndex = 5;
+            this.tbTarjeta.Text = "1452365247856985";
             // 
             // tbFecVenc
             // 
@@ -116,6 +117,7 @@
             this.tbFecVenc.Name = "tbFecVenc";
             this.tbFecVenc.Size = new System.Drawing.Size(100, 20);
             this.tbFecVenc.TabIndex = 6;
+            this.tbFecVenc.Text = "05/25";
             // 
             // tbPIN
             // 
@@ -123,13 +125,14 @@
             this.tbPIN.Name = "tbPIN";
             this.tbPIN.Size = new System.Drawing.Size(100, 20);
             this.tbPIN.TabIndex = 7;
+            this.tbPIN.Text = "1452";
             // 
             // btAceptar
             // 
             this.btAceptar.Location = new System.Drawing.Point(144, 141);
             this.btAceptar.Name = "btAceptar";
             this.btAceptar.Size = new System.Drawing.Size(75, 23);
-            this.btAceptar.TabIndex = 8;
+            this.btAceptar.TabIndex = 9;
             this.btAceptar.Text = "Aceptar";
             this.btAceptar.UseVisualStyleBackColor = true;
             this.btAceptar.Click += new System.EventHandler(this.btAceptar_Click);
@@ -147,7 +150,8 @@
             this.tbMonto.Location = new System.Drawing.Point(119, 105);
             this.tbMonto.Name = "tbMonto";
             this.tbMonto.Size = new System.Drawing.Size(100, 20);
-            this.tbMonto.TabIndex = 11;
+            this.tbMonto.TabIndex = 8;
+            this.tbMonto.Text = "25000";
             // 
             // label4
             // 
@@ -185,6 +189,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Name = "FrmRetiro";
             this.Text = "FrmRetiro";
+            this.Load += new System.EventHandler(this.FrmRetiro_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

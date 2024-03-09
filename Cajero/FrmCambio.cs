@@ -54,23 +54,27 @@ namespace Cajero
                 
             }
 
-            byte[] encNumeroTarjeta = AesEncryption.Encrypt(tbTarjeta.Text, key, iv);
-            byte[] encFecVenc = AesEncryption.Encrypt(tbFecVenc.Text, key, iv);
-            byte[] encPIN = AesEncryption.Encrypt(tbPIN.Text, key, iv);
+  
+
+            string encNumeroTarjeta = AesEncryption.Encrypt(tbTarjeta.Text, key, iv);
+            string encPIN = AesEncryption.Encrypt(tbPIN.Text, key, iv);
+            string encNuevoPIN = AesEncryption.Encrypt(tbNuevoPIN.Text, key, iv);
+            string encFecVenc = AesEncryption.Encrypt(tbFecVenc.Text, key, iv);
 
             //Codigo autorizacion
             string authCode = authObj.GenerarCodigoAutorizacion(8);
 
             //asignaciones
-            SerializacionRetiro transaccion = new SerializacionRetiro
+            SerializacionCambio transaccion = new SerializacionCambio
             {
                 NumeroTarjeta = encNumeroTarjeta,
                 PIN = encPIN,
+                nuevoPIN = encNuevoPIN,
                 FechaVencimiento = encFecVenc,
                 CodigoVerificacion = authCode,
                 IdentificacionCajero = "CAJERO123",
-                TipoTransaccion = "retiro",
-                //MontoTransaccion = tbMonto.Text
+                TipoTransaccion = "cambio",
+            
             };
 
 
@@ -80,12 +84,24 @@ namespace Cajero
 
             // Abrir socket
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect("localhost", 8000);
+            socket.Connect("127.0.0.1", 8000);
             Console.WriteLine("Conectado al servidor.");
-
-
+            //Trama para enviar clave de encriptado
+            string keyBase64 = Convert.ToBase64String(key);
+            string ivBase64 = Convert.ToBase64String(iv);
+            string trama = "2:" + keyBase64 + ":" + ivBase64;
+            // Convertir la trama a un arreglo de bytes
+            byte[] bufferKey = Encoding.UTF8.GetBytes(trama);
             // Convertir el json a un arreglo de bytes
             byte[] buffer = Encoding.UTF8.GetBytes(json);
+            int tmaño1 = bufferKey.Length;
+            int tmaño2 = buffer.Length;
+
+            Console.WriteLine(tmaño1);
+            Console.WriteLine(tmaño2);
+
+            // Enviar el arreglo de bytes al servidor
+            socket.Send(bufferKey);
 
             // Enviar el arreglo de bytes al servidor
             socket.Send(buffer);
@@ -99,10 +115,17 @@ namespace Cajero
 
             Console.WriteLine(response);
 
+            lblResul.Text = response;
+
             // Cerrar el socket
             socket.Close();
 
             Console.ReadLine();
+        }
+
+        private void FrmCambio_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

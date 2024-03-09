@@ -41,6 +41,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.lblResul = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,7 +96,7 @@
             // 
             // btAceptar
             // 
-            this.btAceptar.Location = new System.Drawing.Point(142, 141);
+            this.btAceptar.Location = new System.Drawing.Point(142, 131);
             this.btAceptar.Name = "btAceptar";
             this.btAceptar.Size = new System.Drawing.Size(75, 23);
             this.btAceptar.TabIndex = 17;
@@ -151,11 +152,20 @@
             this.label3.TabIndex = 20;
             this.label3.Text = "PIN:";
             // 
+            // lblResul
+            // 
+            this.lblResul.AutoSize = true;
+            this.lblResul.Location = new System.Drawing.Point(12, 171);
+            this.lblResul.Name = "lblResul";
+            this.lblResul.Size = new System.Drawing.Size(0, 13);
+            this.lblResul.TabIndex = 21;
+            // 
             // FrmCambio
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(334, 311);
+            this.Controls.Add(this.lblResul);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.tbNuevoPIN);
             this.Controls.Add(this.label4);
@@ -168,6 +178,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Name = "FrmCambio";
             this.Text = "FrmCambio";
+            this.Load += new System.EventHandler(this.FrmCambio_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -190,5 +201,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblResul;
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -29,7 +30,7 @@ namespace Cajero
             AuthCode authObj = new AuthCode();
             byte[] iv;
             byte[] key;
-
+            
             //encriptacion AES
             using (Aes aesAlg = Aes.Create())
             {
@@ -38,14 +39,17 @@ namespace Cajero
                 key = aesAlg.Key;
             }
 
-            byte[] encNumeroTarjeta = AesEncryption.Encrypt(tbTarjeta.Text, key, iv);
-            byte[] encFecVenc = AesEncryption.Encrypt(tbFecVenc.Text, key, iv);
-            byte[] encPIN = AesEncryption.Encrypt(tbPIN.Text, key, iv);
+
+            string encNumeroTarjeta = AesEncryption.Encrypt(tbTarjeta.Text, key, iv);
+            string encFecVenc = AesEncryption.Encrypt(tbFecVenc.Text, key, iv);
+            string encPIN = AesEncryption.Encrypt(tbPIN.Text, key, iv);
+
 
             //Codigo autorizacion
             string authCode = authObj.GenerarCodigoAutorizacion(8);
 
-            //asignaciones
+           
+            //Serializacion
             SerializacionRetiro transaccion = new SerializacionRetiro
             {
                 NumeroTarjeta = encNumeroTarjeta,
@@ -59,17 +63,62 @@ namespace Cajero
 
 
             string json = JsonConvert.SerializeObject(transaccion);
+            
             Console.WriteLine(json);
 
 
             // Abrir socket
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect("localhost", 8000);
-            Console.WriteLine("Conectado al servidor.");
- 
-           
-            // Convertir el json a un arreglo de bytes
+            socket.Connect("127.0.0.1", 8000);
+            
+
+             // Convertir el json a un arreglo de bytes
             byte[] buffer = Encoding.UTF8.GetBytes(json);
+
+            int tmaño2 = buffer.Length;
+            string keyB64 = Convert.ToBase64String(key);
+            string ivB64 =  Convert.ToBase64String(iv);
+            Console.WriteLine("BASE64 STRING");
+            Console.WriteLine(keyB64);
+            Console.WriteLine(ivB64);
+            //Trama para enviar clave de encriptado
+            // Convertir la clave y el IV de Base64 a bytes
+            byte[] keyBytes = Convert.FromBase64String(keyB64);
+            byte[] ivBytes = Convert.FromBase64String(ivB64);
+            byte[] bufferKey;
+            Console.WriteLine("IV " + ivBytes.Length);
+            Console.WriteLine("KEY " + keyBytes.Length);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (BinaryWriter writer = new BinaryWriter(ms))
+                {
+                    writer.Write(keyBytes); // Clave °°°°° 00111010 = :
+                    writer.Write(ivBytes); // IV
+                }
+                bufferKey = ms.ToArray();
+            }
+            Console.WriteLine(bufferKey);
+           
+            
+
+            int tmaño1 = bufferKey.Length;
+            string trama = "0:" + tmaño1 + ":" + tmaño2;
+            Console.WriteLine(tmaño1); 
+            Console.WriteLine(tmaño2);
+            byte[] bufferType = Encoding.UTF8.GetBytes(trama);
+            int tmaño3 = bufferType.Length;
+            Console.WriteLine(tmaño3);
+            // Enviar el arreglo de bytes al servidor
+            foreach (byte b in bufferKey)
+            {
+                Console.Write($"{b:X2} "); // Imprime cada byte en formato hexadecimal
+            }
+            Console.WriteLine();
+            Console.WriteLine("Trama clave"+ bufferKey);
+            socket.Send(bufferType);
+
+            // Enviar el arreglo de bytes al servidor
+            socket.Send(bufferKey);
 
             // Enviar el arreglo de bytes al servidor
             socket.Send(buffer);
@@ -87,6 +136,11 @@ namespace Cajero
             socket.Close();
 
             Console.ReadLine();
+        }
+
+        private void FrmRetiro_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

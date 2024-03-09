@@ -9,14 +9,13 @@ namespace Cajero
 {
     public class AesEncryption
     {
-        public static byte[] Encrypt(string plaintext, byte[] key, byte[] iv)
+        public static string Encrypt(string plaintext, byte[] key, byte[] iv)
         {
             using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = key;
                 aesAlg.IV = iv;
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-                byte[] encryptedBytes;
                 using (var msEncrypt = new System.IO.MemoryStream())
                 {
                     using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
@@ -24,9 +23,10 @@ namespace Cajero
                         byte[] plainBytes = Encoding.UTF8.GetBytes(plaintext);
                         csEncrypt.Write(plainBytes, 0, plainBytes.Length);
                     }
-                    encryptedBytes = msEncrypt.ToArray();
+                    byte[] encryptedBytes = msEncrypt.ToArray();
+                    // Convertir los bytes encriptados a Base64 y devolver como una cadena
+                    return Convert.ToBase64String(encryptedBytes);
                 }
-                return encryptedBytes;
             }
         }
         public static string Decrypt(byte[] ciphertext, byte[] key, byte[] iv)

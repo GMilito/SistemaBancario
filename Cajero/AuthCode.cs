@@ -8,7 +8,7 @@ namespace Cajero
     {
         public string GenerarCodigoAutorizacion(int lar)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            const string chars = "0123456789";
             Random random = new Random();
             StringBuilder stringBuilder = new StringBuilder(lar);
 

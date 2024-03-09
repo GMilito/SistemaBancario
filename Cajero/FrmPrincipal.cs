@@ -12,9 +12,7 @@ namespace Cajero
 {
     public partial class FrmPrincipal : Form
     {
-        int nroTarjeta = 0;
-        string fechaVenc = string.Empty;
-        int PIN = 0;
+
         public FrmPrincipal()
         {
             InitializeComponent();
