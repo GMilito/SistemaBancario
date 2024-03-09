@@ -20,19 +20,19 @@ namespace Cajero
 
         private void retiroToolStripMenuItem_Click(object sender, EventArgs e)
         {  
-            FrmRetiro frm = new FrmRetiro();
+            FrmRetiro frm = new FrmRetiro(tbIDCajero.Text);
             frm.Show();
         }
 
         private void consultaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmConsulta frm = new FrmConsulta();
+            FrmConsulta frm = new FrmConsulta(tbIDCajero.Text);
             frm.Show();
         }
 
         private void cambioDeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmCambio frm = new FrmCambio();
+            FrmCambio frm = new FrmCambio(tbIDCajero.Text);
             frm.Show();
         }
     }

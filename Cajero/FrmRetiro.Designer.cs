@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.retiroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.consultaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cambioDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
@@ -49,7 +48,6 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.retiroToolStripMenuItem,
             this.consultaToolStripMenuItem,
             this.cambioDeToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -58,23 +56,19 @@
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // retiroToolStripMenuItem
-            // 
-            this.retiroToolStripMenuItem.Name = "retiroToolStripMenuItem";
-            this.retiroToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
-            this.retiroToolStripMenuItem.Text = "Retiro";
-            // 
             // consultaToolStripMenuItem
             // 
             this.consultaToolStripMenuItem.Name = "consultaToolStripMenuItem";
             this.consultaToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
             this.consultaToolStripMenuItem.Text = "Consulta";
+            this.consultaToolStripMenuItem.Click += new System.EventHandler(this.consultaToolStripMenuItem_Click);
             // 
             // cambioDeToolStripMenuItem
             // 
             this.cambioDeToolStripMenuItem.Name = "cambioDeToolStripMenuItem";
             this.cambioDeToolStripMenuItem.Size = new System.Drawing.Size(99, 20);
             this.cambioDeToolStripMenuItem.Text = "Cambio de PIN";
+            this.cambioDeToolStripMenuItem.Click += new System.EventHandler(this.cambioDeToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -200,7 +194,6 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem retiroToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem consultaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cambioDeToolStripMenuItem;
         private System.Windows.Forms.Label label1;

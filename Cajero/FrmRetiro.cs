@@ -19,9 +19,13 @@ namespace Cajero
 {
     public partial class FrmRetiro : Form
     {
-        public FrmRetiro()
+        string idCajero;
+        public FrmRetiro(string idCajero)
         {
+            this.idCajero = idCajero;
             InitializeComponent();
+            Console.WriteLine(this.idCajero);
+
         }
 
         
@@ -56,7 +60,7 @@ namespace Cajero
                 PIN = encPIN,
                 FechaVencimiento = encFecVenc,
                 CodigoVerificacion = authCode,
-                IdentificacionCajero = "CAJERO123",
+                IdentificacionCajero = this.idCajero,
                 TipoTransaccion = "retiro",
                 MontoTransaccion = tbMonto.Text
             };
@@ -141,6 +145,18 @@ namespace Cajero
         private void FrmRetiro_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void consultaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmConsulta frm = new FrmConsulta(idCajero);
+            frm.Show();
+        }
+
+        private void cambioDeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmCambio frm = new FrmCambio(idCajero);
+            frm.Show();
         }
     }
 }

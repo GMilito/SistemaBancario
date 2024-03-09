@@ -31,7 +31,6 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.retiroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.consultaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cambioDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tbNuevoPIN = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btAceptar = new System.Windows.Forms.Button();
@@ -49,8 +48,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.retiroToolStripMenuItem,
-            this.consultaToolStripMenuItem,
-            this.cambioDeToolStripMenuItem});
+            this.consultaToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(334, 24);
@@ -70,13 +68,6 @@
             this.consultaToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
             this.consultaToolStripMenuItem.Text = "Consulta";
             this.consultaToolStripMenuItem.Click += new System.EventHandler(this.consultaToolStripMenuItem_Click_1);
-            // 
-            // cambioDeToolStripMenuItem
-            // 
-            this.cambioDeToolStripMenuItem.Name = "cambioDeToolStripMenuItem";
-            this.cambioDeToolStripMenuItem.Size = new System.Drawing.Size(99, 20);
-            this.cambioDeToolStripMenuItem.Text = "Cambio de PIN";
-            this.cambioDeToolStripMenuItem.Click += new System.EventHandler(this.cambioDeToolStripMenuItem_Click);
             // 
             // tbNuevoPIN
             // 
@@ -191,7 +182,6 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem retiroToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem consultaToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem cambioDeToolStripMenuItem;
         private System.Windows.Forms.TextBox tbNuevoPIN;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btAceptar;

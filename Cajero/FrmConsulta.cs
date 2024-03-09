@@ -16,8 +16,10 @@ namespace Cajero
 {
     public partial class FrmConsulta : Form
     {
-        public FrmConsulta()
+        string idCajero;
+        public FrmConsulta(string idCajero)
         {
+            this.idCajero = idCajero;
             InitializeComponent();
         }
 
@@ -58,8 +60,7 @@ namespace Cajero
                 FechaVencimiento = encFecVenc,
                 CodigoVerificacion = authCode,
                 IdentificacionCajero = "CAJERO123",
-                TipoTransaccion = "retiro",
-
+                TipoTransaccion = "consulta",
             };
 
 
@@ -103,7 +104,7 @@ namespace Cajero
 
 
             int tmaño1 = bufferKey.Length;
-            string trama = "0:" + tmaño1 + ":" + tmaño2;
+            string trama = "1:" + tmaño1 + ":" + tmaño2;
             Console.WriteLine(tmaño1);
             Console.WriteLine(tmaño2);
             byte[] bufferType = Encoding.UTF8.GetBytes(trama);

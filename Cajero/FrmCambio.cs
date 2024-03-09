@@ -16,26 +16,28 @@ namespace Cajero
 {
     public partial class FrmCambio : Form
     {
-        public FrmCambio()
+        string idCajero;
+        public FrmCambio(string idCajero)
         {
+            this.idCajero = idCajero;
             InitializeComponent();
         }
 
         private void retiroToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmRetiro frm = new FrmRetiro();
+            FrmRetiro frm = new FrmRetiro(idCajero);
             frm.Show();
         }
 
         private void consultaToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            FrmConsulta frm = new FrmConsulta();
+            FrmConsulta frm = new FrmConsulta(idCajero);
             frm.Show();
         }
 
         private void cambioDeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmCambio frm = new FrmCambio();
+            FrmCambio frm = new FrmCambio(idCajero);
             frm.Show();
             
         }
