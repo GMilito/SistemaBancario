@@ -22,13 +22,16 @@ def recvall(sock, tamaño):
     print(datos)
     return datos
 
-
+def registrarBitacora():
+    with open("bitacora.json", mode='w', encoding='utf-8') as f:
+        json.dump([], f)
         
 def procesarTransaccion(tipo,jsonBytes,KEY,IV):
     print("procesarTransaccion")
     if tipo == 0:
-        
-        return procesarRetiro(jsonBytes,KEY,IV)
+        respuesta = procesarRetiro(jsonBytes,KEY,IV)
+        print("Respuesta de Java: ",respuesta)
+        return respuesta
         
     if tipo == 1:
         #jsonConsulta = json.loads(jsonstr)
@@ -40,6 +43,7 @@ def limpiarString(input_string):
     # Filtrar caracteres no imprimibles y caracteres especiales 
     cleaned_string = ''.join(char for char in input_string if char.isprintable())
     return cleaned_string  
+
 
 def validarTarjeta(nroTarjeta,Pin,FecVec):
     print("validarTarjeta")
@@ -64,6 +68,76 @@ def validarTarjeta(nroTarjeta,Pin,FecVec):
         return True
     else:
         return False
+    
+def validarEstadoTarjeta(nroTarjeta):
+    print("validarEstadoTarjeta")
+    dict = verificarEstadoTarjetaDB(nroTarjeta)
+    estadoTarjeta = dict['estadoTarjeta']
+    
+    if estadoTarjeta == "activa":
+        return True
+    else:
+        return False
+    
+def validarCajero(idCajero):
+    print("validarCajero")
+    dict = verificarCajero(idCajero)
+    print(dict)
+    if dict is None:
+        return False
+    idCajeroDB = dict['idCajero']
+    print("id cajero")
+    print(idCajero)
+    
+    print("id cajero DB")
+    print(idCajeroDB)
+    
+    print("Validacion")
+    print(idCajero == idCajeroDB)
+    
+    if int(idCajero) == idCajeroDB:
+        return True
+    else:
+        return False
+    
+def validarFechaTarjeta(nroTarjeta):
+    print("validarFechaTarjeta")
+    dict = verificarFechaTarjetaDB(nroTarjeta)
+    print(dict)
+    fechaVencimiento = dict['fechaVencimiento']
+    print(fechaVencimiento)
+    fecha_actual = datetime.now().date()
+    print("Fecha Validacion")
+    print(fecha_actual , fechaVencimiento)
+    print(fecha_actual < fechaVencimiento)
+    print(fechaVencimiento , fecha_actual)
+    print(fechaVencimiento < fecha_actual)
+    if fechaVencimiento > fecha_actual:
+        return True
+    else:
+        return False
+    
+def enviarCore(host, port, mensaje):
+    print("enviarCore")
+    # Crear un socket TCP/IP
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    try:
+        # Conectar el socket al servidor
+        sock.connect((host, port))
+        
+        # Enviar el mensaje al servidor
+        sock.sendall(mensaje.encode())
+        
+        # Esperar la respuesta del servidor
+        respuesta = sock.recv(5)
+        
+        # Imprimir la respuesta del servidor
+        print("Respuesta del servidor:", respuesta.decode())
+        return respuesta.decode()
+    finally:
+        # Cerrar el socket
+        sock.close()
 
 def procesarRetiro(jsonBytes,KEY,IV):
     print("procesarRetiro")
@@ -88,52 +162,124 @@ def procesarRetiro(jsonBytes,KEY,IV):
     
     monto = jsonRetiro['MontoTransaccion']
     codigo = jsonRetiro['CodigoVerificacion']
+    idCajero = jsonRetiro['IdentificacionCajero']
     
     print("tarjeta ",NroTarjeta,"PIN ",PINstr, "fec" ,FecVec)
     
     validada = validarTarjeta(NroTarjeta,PINstr,FecVec)
+    activa = validarEstadoTarjeta(NroTarjeta)
+    alDia = validarFechaTarjeta(NroTarjeta)
+    cajeroValido = validarCajero(idCajero) 
     print("Validacion")
     print(validada)
-    if validada:
-        print("Validada")
-        resp = verificarTipoTarjeta(NroTarjeta)
-        tipoTarjeta = resp['tipoTarjeta']
-        if tipoTarjeta == "credito":
-            pass
-        elif tipoTarjeta == 'debito':
-            resp = getNroCuenta(NroTarjeta)
-            nroCuenta = resp['numeroCuenta']
-            trama = "0:"+nroCuenta+":"+monto+":"+NroTarjeta+":"+codigo
-            # Crear un socket TCP/IP
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-            # Definir la dirección IP y el puerto del servidor al que te quieres conectar
-            server_address = ('localhost', 4528)
-
-            # Conectar el socket al servidor
-            print('Conectándose a {} en el puerto {}'.format(*server_address))
-            sock.connect(server_address)
-
-            try:
-                # Enviar datos
-                buffer = trama.encode('utf-8')
-                print('Enviando {!r}'.format(buffer))
-                sock.sendall(buffer)
-
-                # Esperar la respuesta del servidor
-                amount_received = 0
-                amount_expected = len(trama)
-
-                while amount_received < amount_expected:
-                    data = sock.recv(16)
-                    amount_received += len(data)
-                    print('Recibido {!r}'.format(data))
-
-            finally:
-                print('Cerrando conexión')
-                sock.close()
+    if (cajeroValido):
+        if validada:
+            print("Validada")
+            if activa:
+                if alDia:
+                    print("alDia")
+                    resp = verificarTipoTarjeta(NroTarjeta)
+                    tipoTarjeta = resp['tipoTarjeta']
+                    if tipoTarjeta == "credito":
+                        
+                        
+                        
+                        #CREDITO
+                        
+                        
+                        
+                        resp = getNroCuenta(NroTarjeta)
+                        print(resp)
+                        nroCuenta = resp['numeroCuenta']
+                        print(nroCuenta)
+                        montoDisponible = consultarSaldo(NroTarjeta)
+                        
+                        
+                        if monto <= montoDisponible:
+                            data = {
+                                "status": "OK",
+                                "autorizacion": codigo,
+                            }
+                            respJson = json.dumps(data)
+                            return respJson
+                        elif monto > montoDisponible:
+                            data = {
+                                "status": "1: Fondos insuficientes",
+                                "autorizacion": codigo,
+                            }
+                            respJson = json.dumps(data)
+                            return respJson
+                        elif montoDisponible is None:
+                            data = {
+                                "status": "5: Error no controlado.",
+                                "autorizacion": codigo,
+                            }
+                            respJson = json.dumps(data)
+                            return respJson
+                    elif tipoTarjeta == 'debito':
+                        
+                        
+                        
+                    
+                        #DEBITO
+                        
+                        
+                        
+                        resp = getNroCuenta(NroTarjeta)
+                        print(resp)
+                        nroCuenta = resp['numeroCuenta']
+                        print(nroCuenta)
+                        trama = "0:"+nroCuenta+":"+monto+":"+NroTarjeta+":"+codigo
+                        respuesta = enviarCore('localhost',8080,trama)
+                        if respuesta == "OK???":
+                            data = {
+                                "status": "OK",
+                                "autorizacion": codigo,
+                            }
+                            respJson = json.dumps(data)
+                            return respJson
+                        elif respuesta == "INSUF":
+                            data = {
+                                "status": "1: Fondos insuficientes",
+                                "autorizacion": codigo,
+                            }
+                            respJson = json.dumps(data)
+                            return respJson
+                        elif respuesta == "ERROR":
+                            data = {
+                                "status": "5: Error no controlado.",
+                                "autorizacion": codigo,
+                            }
+                            respJson = json.dumps(data)
+                            return respJson
+                else:
+                    data = {
+                        "status": "4: Tarjeta vencida.",
+                        "autorizacion": codigo,
+                    }
+                    respJson = json.dumps(data)
+                    return respJson
+            else:
+                data = {
+                    "status": "3: Tarjeta inactiva.",
+                    "autorizacion": codigo,
+                }
+                respJson = json.dumps(data)
+                return respJson
         else:
-            return "Datos incorrectos"
+            data = {
+                "status": "2: Datos incorrectos.",
+                "autorizacion": codigo,
+            }
+            respJson = json.dumps(data)
+            return respJson    
+    else:
+        data = {
+                "status": "6: Cajero Invalido.",
+                "autorizacion": codigo,
+            }
+        respJson = json.dumps(data)
+        return respJson    
         
     
     
@@ -206,7 +352,7 @@ def manejarCliente(client_socket, client_address):
     finally:
         pass
     
-    # Ejemplo: enviar un mensaje de bienvenida al cliente
+    # Enviar respuesta al cajero
     client_socket.sendall(respuesta.encode())
 
     # Cerrar la conexión con el cliente

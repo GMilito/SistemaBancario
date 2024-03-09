@@ -24,6 +24,54 @@ def verificarTarjetaDB(numeroTarjeta):
         print(f"Error al consultar datos de la tarjeta: {e}")
         return None
     
+def verificarEstadoTarjetaDB(numeroTarjeta):
+    try:
+        with conexion.cursor() as cursor:
+            # Consulta para obtener los datos de la tarjeta
+            sql = "SELECT estadoTarjeta FROM tarjeta WHERE numeroTarjeta = %s"
+            cursor.execute(sql, (numeroTarjeta,))
+            datos_tarjeta = cursor.fetchone()
+            if datos_tarjeta:
+                return datos_tarjeta
+            else:
+                return None
+
+    except pymysql.Error as e:
+        print(f"Error al consultar datos de la tarjeta: {e}")
+        return None
+    
+def verificarCajero(idCajero):
+    try:
+        with conexion.cursor() as cursor:
+            # Consulta para obtener los datos de la tarjeta
+            sql = "SELECT idCajero FROM cajero WHERE idCajero = %s"
+            cursor.execute(sql, (idCajero,))
+            datos_tarjeta = cursor.fetchone()
+            if datos_tarjeta:
+                return datos_tarjeta
+            else:
+                return None
+
+    except pymysql.Error as e:
+        print(f"Error al consultar datos de la tarjeta: {e}")
+        return None
+    
+def verificarFechaTarjetaDB(numeroTarjeta):
+    try:
+        with conexion.cursor() as cursor:
+            # Consulta para obtener los datos de la tarjeta
+            sql = "SELECT fechaVencimiento FROM tarjeta WHERE numeroTarjeta = %s"
+            cursor.execute(sql, (numeroTarjeta,))
+            datos_tarjeta = cursor.fetchone()
+            if datos_tarjeta:
+                return datos_tarjeta
+            else:
+                return None
+
+    except pymysql.Error as e:
+        print(f"Error al consultar datos de la tarjeta: {e}")
+        return None
+    
 def verificarTipoTarjeta(numeroTarjeta):
     try:
         with conexion.cursor() as cursor:
