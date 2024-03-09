@@ -1,0 +1,54 @@
+create database dbautenticador;
+use dbautenticador;
+
+create table tipoTransaccion 
+(
+idTipoTransaccion INT,
+Descripcion VARCHAR(45),
+PRIMARY KEY (idTipoTransaccion)
+);
+
+create table cajero 
+(
+idCajero INT, 
+descripcionCajero VARCHAR(45), 
+PRIMARY KEY (idCajero)
+);
+
+create table cliente
+(
+idCliente INT, 
+Nombre VARCHAR(100), 
+Apellido VARCHAR(100), 
+PRIMARY KEY (idCliente)
+);
+
+create table tarjeta 
+(
+idTarjeta int, 
+numeroTarjeta VARCHAR(20), 
+PIN INT, 
+fechaVencimiento date, 
+CVV INT, 
+montoDisponible DECIMAL(15,2), 
+estadoTarjeta VARCHAR(10), 
+tipoTarjeta VARCHAR(15), 
+numeroCuenta VARCHAR(20), 
+idCliente int, 
+PRIMARY KEY (idTarjeta), 
+FOREIGN KEY (idCliente) REFERENCES cliente(idCliente));
+
+create table transaccion
+(
+idTransaccion INT AUTO_INCREMENT, 
+idTarjeta int, 
+fechaTransaccion DATE, 
+montoTransaccion DECIMAL(15,2), 
+idTipoTransaccion INT, 
+codigoAutorizacion VARCHAR(10), 
+idCajero INT, Estado VARCHAR(20), 
+PRIMARY KEY (idTransaccion), 
+FOREIGN KEY (idTarjeta) REFERENCES tarjeta(idTarjeta),
+FOREIGN KEY (idTipoTransaccion) REFERENCES tipoTransaccion(idTipoTransaccion), 
+FOREIGN KEY (idCajero) REFERENCES Cajero(idCajero)
+);
